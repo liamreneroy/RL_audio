@@ -1,6 +1,10 @@
 # IMPORTS
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
 from pygame import mixer
 import time
+import numpy as np
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +22,7 @@ audio_extension = ".mp3"
 class audio_object:
 	""" the base audio object class """
 	
-	def __init__(self, param_1, param_2):                
+	def __init__(self, param_1, param_2, budget):                
 		self.initialize() # reset the socket
 
 		# set all the sound parameters for the object (value for volume, amplitude of pitch change, etc)
@@ -29,6 +33,9 @@ class audio_object:
 		# Get the mp3 path based on parameter inputs
 		param_1_str = str(self.param_1)
 		param_2_str = str(self.param_2)
+
+		self.confidence_level = 0.5 # * np.sqrt(np.log(budget)) ~ set arbitrarily for now - tune later (between 0.2 & 2)
+									# could maybe create self.time_step & slowly increment down
 
 		self.mp3_path = audio_library_path + sound_library + "_" + param_1_str + "_" + param_2_str + audio_extension
 		# print(f"returned mp3_path from Get_mp3_Path is: {self.mp3_path}")
@@ -65,7 +72,7 @@ class audio_object:
 			try:
 				print("type 'back' + enter to replay sound")
 				print()
-				_perceived_state_index = int(input(f"What state is the robot in: \n[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n"))
+				_perceived_state_index = int(input(f"What state is the robot in: \n[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n"))
 				print()
 
 			except ValueError:
@@ -85,6 +92,10 @@ class audio_object:
 				break
 			
 			elif _perceived_state_index == 2:
+				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
+				break
+
+			elif _perceived_state_index == 3:
 				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
 				break
 
@@ -127,6 +138,13 @@ class audio_object:
 		# print(f"returned reward from probe: {self.R}")  
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	def uncertainty(self, time_step): 
+		""" calculate the uncertainty in the estimate of this audio object's mean """
+		if self.n == 0: return float('inf')                         
+		return self.confidence_level * (np.sqrt(np.log(time_step) / self.n))   
+
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					
 	def update(self):
 		""" update this Q-Value for this sound after it has returned reward value 'R' """     
@@ -134,18 +152,18 @@ class audio_object:
 		# increment the number of times this socket has been tried
 		self.n += 1
 
-		# the new estimate of the mean is calculated from the old estimate
+		# The new estimate of the mean is calculated from the old estimate
 		# This is the update equations from UCB1 algorithm
 		self.Q = (1 - 1.0/self.n) * self.Q + (1.0/self.n) * self.R
 	
 	
-	def sample(self):
+	def sample(self, time_step):
 		""" return an estimate of the audio objects reward value """
 
 		print(f"(hidden) ~ returned self.Q from sample is: {self.Q}\n")
-		
-		return self.Q
+		print(f"(hidden) ~ returned self.uncertainty from sample is: {self.uncertainty(time_step)}\n")
 
+		return self.Q + self.uncertainty(time_step)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
