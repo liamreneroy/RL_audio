@@ -1,75 +1,46 @@
-import get_play_mp3
+# IMPORTS
+import numpy as np
+import audio_control
+import ucb1_algorithm as ucb1
+import misc_helpers
+import random
+
+print(random.randint(3, 9))
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# INITIALIZATIONS 
 
-# Initializations
+budget = 4						# number of total iterations 
+param_disc = ucb1.param_disc 	# number of discretized regions for each param --> i.e. if equals 5 then (0, 1, 2, 3, 4)
 
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-def Print_Logger():
-	# Initial promps to determine if extra print statements are shown
-
-	print()
-
-	while True:
-		try:
-			print_logger = input("Print Debugging (y / n): ")
-			print()
-
-		except ValueError:
-			print("Please enter 'y' or 'n'")
-			print()
-			continue
-
-		if print_logger == "y" or print_logger == "Y" or print_logger == "n" or print_logger == "N":
-			print(f'You entered: {print_logger}')
-			break
-
-		else:
-			print("Please enter 'y' or 'n'")
-			print()
+all_states = ["Progressing", "Successful", "Requires Assistance"]
+current_state_index = 0 		# Current actual state of the robot
 
 
-	if print_logger == "y":
-		print_logger_bin = 1
+sound_obj_array = np.ndarray((param_disc, param_disc),dtype=np.object)
 
-	elif print_logger == "Y":
-		print_logger_bin = 1
-		
-	else:
-		print_logger_bin = 0
-	
-	print()
-	return print_logger_bin
-
+for param_1_range in range(param_disc):
+	for param_2_range in range(param_disc):
+		print(f"Entering object: first_param {param_1_range} // second_param: {param_2_range}")
+		sound_obj_array[param_1_range, param_2_range] = audio_control.audio_object(param_1_range, param_2_range)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+# MAIN
 
 if __name__ == "__main__":
+	print()
 
-    # Comment this out to remove initial print logger y/n prompt 
-    print_logger_ext = Print_Logger()
+	for i in range(0, budget):
+		print("----------------------------------------------------------------")
+		print("----------------------------------------------------------------")
+		print()
 
-    # Ask user what V/A they want, then find acording filepath 
-    init_valence, init_arousal = get_play_mp3.Get_Valence_Arousal()
-    MP3_file_path = get_play_mp3.Get_MP3_Path(init_valence, init_arousal)
-    print()
+		# Choose index of sound to try - currently random policy
+		param_1_idx = random.randint(0, 4)
+		param_2_idx = random.randint(0, 4)
+		print(f"New Param Indices: \nP1: {param_1_idx} \nP2: {param_2_idx}\n")
 
-    if print_logger_ext:
-        print("init_valence", init_valence)
-        print("init_arousal", init_arousal)
-        print()
-        print("MP3_file_path", MP3_file_path)
-        print()
-
-    # Play the desired MP# file
-    get_play_mp3.Play_MP3(MP3_file_path)
-
-    
+		# Play the desired mp3 file, probe user based on sound, then update the Q-Value look-up table
+		ucb1.update_loop(sound_obj_array[param_1_idx, param_2_idx], all_states, current_state_index)
