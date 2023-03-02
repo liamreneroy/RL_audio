@@ -3,7 +3,6 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from pygame import mixer
-import time
 import numpy as np
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,6 +17,7 @@ audio_extension = ".mp3"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# CLASSES
 
 class audio_object:
 	""" the base audio object class """
@@ -47,12 +47,10 @@ class audio_object:
 	def initialize(self):
 		""" Initialize both counter n and estimated reward Q. """
 		self.n = 0   # the number of times this socket has been tried
-		self.Q = 0   # the estimate of this socket's reward value                
-		self.R = 0
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	def probe(self, all_states, correct_state_index, mixer_volume=default_mixer_volume):
+	def probe(self, all_states, mixer_volume=default_mixer_volume):
 		""" play the mp3 file then return a reward based on the answer provided by the user. """
 		
 		#Instantiate mixer
@@ -73,7 +71,7 @@ class audio_object:
 		while True:
 			try:
 				print()
-				_perceived_state_index = int(input(f"What state is the robot in: \n[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\nHit 'enter' to replay the sound...\nSelect a state between [0 to 3]:\n"))
+				probed_state_index = int(input(f"What state is the robot in: \n[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\nHit 'enter' to replay the sound...\nSelect a state between [0 to 3]:\n"))
 				print()
 
 			except ValueError:
@@ -84,23 +82,23 @@ class audio_object:
 				print()
 				continue
 
-			if _perceived_state_index == 0:
-				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
+			if probed_state_index == 0:
+				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
 				break
 
-			elif _perceived_state_index == 1:
-				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
+			elif probed_state_index == 1:
+				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
 				break
 			
-			elif _perceived_state_index == 2:
-				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
+			elif probed_state_index == 2:
+				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
 				break
 
-			elif _perceived_state_index == 3:
-				print(f'You entered: {_perceived_state_index} --> state: {all_states[_perceived_state_index]}\n')
+			elif probed_state_index == 3:
+				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
 				break
 
-			elif _perceived_state_index == 4:
+			elif probed_state_index == 4:
 				print(f'Replaying sound...\n')
 				print()
 
@@ -112,7 +110,7 @@ class audio_object:
 
 		while True:
 			try:
-				_confidence = int(input("Hit 'enter' to replay the sound... \nScore your confidence in this response from [0 to 10]: "))
+				probed_confidence = int(input("Hit 'enter' to replay the sound... \nScore your confidence in this response from [0 to 10]: "))
 			except ValueError:
 				print()
 				print("Please enter a valid integer 0 to 10")
@@ -121,8 +119,8 @@ class audio_object:
 				mixer.music.play()
 
 				continue
-			if _confidence >= 0 and _confidence <= 10:
-				print(f'You entered: {_confidence}\n')
+			if probed_confidence >= 0 and probed_confidence <= 10:
+				print(f'You entered: {probed_confidence}\n')
 				break
 
 			else:
@@ -133,42 +131,25 @@ class audio_object:
 		# User has now responded --> stop the sound playing
 		mixer.music.stop()
 
-		# Add something extra for selection of "not sure" - maybe just enter Q = 0 (flat)
-		if _perceived_state_index == correct_state_index:
-			correct_multiplier = 1.0
-		elif _perceived_state_index != correct_state_index:
-			correct_multiplier = -1.0
+		return probed_state_index, probed_confidence
 
-		self.R = correct_multiplier * _confidence
-		# print(f"returned reward from probe: {self.R}")  
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	def uncertainty(self, time_step): 
-		""" calculate the uncertainty in the estimate of this audio object's mean """
-		if self.n == 0: return float('inf')                         
-		return self.confidence_level * (np.sqrt(np.log(time_step) / self.n))   
 
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					
 	def update(self):
 		""" update this Q-Value for this sound after it has returned reward value 'R' """     
 	
 		# increment the number of times this socket has been tried
 		self.n += 1
 
-		# The new estimate of the mean is calculated from the old estimate
-		# This is the update equations from UCB1 algorithm
-		self.Q = (1 - 1.0/self.n) * self.Q + (1.0/self.n) * self.R
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
-	
-	def sample(self, time_step):
-		""" return an estimate of the audio objects reward value """
 
-		print(f"(hidden) ~ returned self.Q from sample is: {self.Q}\n")
-		print(f"(hidden) ~ returned self.uncertainty from sample is: {self.uncertainty(time_step)}\n")
-
-		return self.Q + self.uncertainty(time_step)
+	def uncertainty(self, time_step): 
+		""" calculate the uncertainty in the estimate of this audio object's mean """
+		if self.n == 0: return float('inf')                         
+		return self.confidence_level * (np.sqrt(np.log(time_step) / self.n))   
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
