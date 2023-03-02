@@ -7,10 +7,6 @@ import numpy as np
 
 param_disc = 3 # number of discretized regions for each param --> i.e. if equals 5 then (0, 1, 2, 3, 4)
 
-# Initialize all Q-Values to max reward (optimism in the face of uncertainty)
-Q_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrary initialization
-
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # CLASSES
@@ -18,13 +14,16 @@ Q_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrar
 class robot_state:
 	""" the base state object class """
 	
-	def __init__(self, state_idx, description, param_disc):                
+	def __init__(self, state_idx, description, param_disc, load_file):                
 
 		self.state_idx = state_idx
 		self.description = description
 
-		# Initialize all Q-Values to max reward (optimism in the face of uncertainty)
-		self.action_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrary initialization
+		if load_file: # Load an existing Q-table
+			self.action_value_lookup = np.load("arrays/" + load_file + "_st" + str(self.state_idx) + ".npy")
+		
+		else: # Initialize all Q-Values to max reward (optimism in the face of uncertainty)
+			self.action_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrary initialization
 
 
 	def action_selection(self):
