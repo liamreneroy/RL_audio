@@ -9,11 +9,6 @@ import numpy as np
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZATIONS 
 default_mixer_volume = 0.75
-sound_library = "lib3"
-
-audio_library_path = "/home/liamroy/Documents/PHD/repos/RL_audio/audio/sonif_" + sound_library + "/looped/"
-audio_extension = ".mp3"
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,13 +17,13 @@ audio_extension = ".mp3"
 class audio_object:
 	""" the base audio object class """
 	
-	def __init__(self, param_1, param_2, param_3, budget):                
+	def __init__(self, param_1, param_2, param_3, budget, sound_library):				
 		self.initialize() # reset the audio object (socket)
 
 		# set all the sound parameters for the object (value for volume, amplitude of pitch change, etc)
 		# Each parameter ranges on an INTEGER value from 0 to 4 value --> 0 is lowest, 4 is highest
 		self.param_1 = param_1 	# Speed of audio loop (BPM)		 --> (120 BPM   //  150 BPM  //  180 BPM)
-		self.param_2 = param_2 	# Number of beeps per loop (BPL) --> (1 BPL     //  2 BPM    //  4 BPL) 
+		self.param_2 = param_2 	# Number of beeps per loop (BPL) --> (1 BPL	 //  2 BPM	 //  4 BPL) 
 		self.param_3 = param_3 	# Amplitude of Pitch Bend  		 --> (downward  //  neutral  //  upward)
 
 		# Get the mp3 path based on parameter inputs
@@ -39,7 +34,14 @@ class audio_object:
 		self.confidence_level = 0.5 # * np.sqrt(np.log(budget)) ~ set arbitrarily for now - tune later (between 0.2 & 2)
 									# could maybe create self.time_step & slowly increment down
 
-		self.mp3_path = audio_library_path + sound_library + "_" + param_1_str + "_" + param_2_str + "_" + param_3_str + audio_extension
+		# Setup the elements to create the sound librabry global path	
+		self.sound_library = sound_library # "lib3" = library 3
+		
+		audio_library_path = "/home/liamroy/Documents/PHD/repos/RL_audio/audio/sonif_" + sound_library + "/looped/"
+		audio_extension = ".mp3"
+
+		# Define the sound librabry global path
+		self.mp3_path = audio_library_path + param_1_str + "_" + param_2_str + "_" + param_3_str + audio_extension
 		# print(f"returned mp3_path from Get_mp3_Path is: {self.mp3_path}")
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,7 +140,7 @@ class audio_object:
 
 
 	def update(self):
-		""" update this Q-Value for this sound after it has returned reward value 'R' """     
+		""" update this Q-Value for this sound after it has returned reward value 'R' """	 
 	
 		# increment the number of times this socket has been tried
 		self.n += 1
@@ -148,7 +150,7 @@ class audio_object:
 
 	def uncertainty(self, time_step): 
 		""" calculate the uncertainty in the estimate of this audio object's mean """
-		if self.n == 0: return float('inf')                         
+		if self.n == 0: return float('inf')						 
 		return self.confidence_level * (np.sqrt(np.log(time_step) / self.n))   
 
 

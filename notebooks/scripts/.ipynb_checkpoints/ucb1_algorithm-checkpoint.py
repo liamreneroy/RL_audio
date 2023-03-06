@@ -5,8 +5,6 @@ import numpy as np
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZATIONS 
 
-param_disc = 3 # number of discretized regions for each param --> i.e. if equals 5 then (0, 1, 2, 3, 4)
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # CLASSES
@@ -14,16 +12,20 @@ param_disc = 3 # number of discretized regions for each param --> i.e. if equals
 class robot_state:
 	""" the base state object class """
 	
-	def __init__(self, state_idx, description, param_disc, load_file):                
+	def __init__(self, state_idx, description, param_disc, load_file, user_ID_str):				
 
 		self.state_idx = state_idx
 		self.description = description
 
 		if load_file: # Load an existing Q-table
-			self.action_value_lookup = np.load("arrays/" + load_file + "_st" + str(self.state_idx) + ".npy")
-		
+			self.action_value_lookup = np.load("user_data/user_" + user_ID_str + "/arrays/" + load_file + "_st" + str(self.state_idx) + ".npy")
+			print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			print(f"Initialized Q-table file: {'user_data/user_' + user_ID_str + '/arrays/' + load_file + '_st' + str(self.state_idx) + '.npy'}\n")
+			
 		else: # Initialize all Q-Values to max reward (optimism in the face of uncertainty)
 			self.action_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrary initialization
+			print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			print(f"Initialized action value Q-table as flat 10.0\n")
 
 
 	def action_selection(self):
