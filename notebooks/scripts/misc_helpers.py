@@ -5,10 +5,12 @@ import time
 from scripts import audio_control
 from scripts import ucb1_algorithm as ucb1
 
+import sys
+from termcolor import colored, cprint
+# Termcolor guide: https://pypi.org/project/termcolor/
+    
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 # STAND-ALONE FUNCTIONS
 
 def print_logger():
@@ -63,7 +65,7 @@ def get_user_ID(parent_dir, num_of_states):
     
     while True:
         try:
-            user_ID_str = str(input(f"\nPlease enter your double digiet user ID number (ex: 00 )\n"))
+            user_ID_str = str(input(f"\nPlease enter your double digiet user ID number (ex: 00 ) then hit 'enter'\n"))
 
         except ValueError:
             print("Invalid user ID...\n")
@@ -82,22 +84,22 @@ def get_user_ID(parent_dir, num_of_states):
             # Create the directory
             try:
                 os.makedirs(path, exist_ok = True)
-                print("\nDirectory '%s' created successfully" % directory)
+                # print("\nDirectory '%s' created successfully" % directory)
             except OSError as error:
-                print("\nDirectory '%s' can not be created" % directory)
+                # print("\nDirectory '%s' can not be created" % directory)
+                pass
         
 
             for state_idx in range(num_of_states):
                 shutil.copyfile("arrays/pilotset_st" + str(state_idx) + ".npy", "user_data/user_" + user_ID_str + "/arrays/pilotset_st" + str(state_idx) + ".npy")
 
-            
-            
-            print("\n\n\n------------------------------------------------------------------------")
-            print("------------------------------------------------------------------------")
-            print(f"Great job! You are user: {user_ID_str}\n")
-            print("Click on the next cell below and hit 'shift + enter' to continue")
-            print("------------------------------------------------------------------------")
-            print("------------------------------------------------------------------------\n\n\n")
+            # Coloured print statement to direct user to next cell
+            cprint("\n\n\n------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
+            cprint("------------------------------------------------------------------------\n", "light_yellow", attrs=["bold"])
+            cprint(f"Great job! You are user: {user_ID_str}\n", "black", "on_yellow", attrs=["bold"])
+            cprint(f"Click on the next cell below and hit 'shift + enter' to continue\n", "black", "on_yellow", attrs=["bold"])
+            cprint("------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
+            cprint("------------------------------------------------------------------------\n\n\n", "light_yellow", attrs=["bold"])
             
             break
 
@@ -141,8 +143,11 @@ def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_st
         
     textfile.close()
 
-    print("\n\n\n------------------------------------------------")
-    print(f"Great job!\n")
-    print("Click on the next cell below and hit 'shift + enter' to continue")
-    print("------------------------------------------------\n\n\n")
-    
+
+    # Coloured print statement to direct user to next cell
+    cprint("\n\n\n------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
+    cprint("------------------------------------------------------------------------\n", "light_yellow", attrs=["bold"])
+    cprint(f"Great job!", "black", "on_yellow", attrs=["bold"])
+    cprint(f"Click on the next cell below and hit 'shift + enter' to continue\n", "black", "on_yellow", attrs=["bold"])
+    cprint("------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
+    cprint("------------------------------------------------------------------------\n\n\n", "light_yellow", attrs=["bold"])

@@ -5,6 +5,10 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from pygame import mixer
 import numpy as np
 
+import sys
+from termcolor import colored, cprint
+# Termcolor guide: https://pypi.org/project/termcolor/
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZATIONS 
@@ -17,7 +21,7 @@ default_mixer_volume = 0.75
 class audio_object:
 	""" the base audio object class """
 	
-	def __init__(self, param_1, param_2, param_3, budget, sound_library):				
+	def __init__(self, param_1, param_2, param_3, sound_library):				
 		self.initialize() # reset the audio object (socket)
 
 		# set all the sound parameters for the object (value for volume, amplitude of pitch change, etc)
@@ -31,8 +35,7 @@ class audio_object:
 		param_2_str = str(self.param_2)
 		param_3_str = str(self.param_3)
 
-		self.confidence_level = 0.5 # * np.sqrt(np.log(budget)) ~ set arbitrarily for now - tune later (between 0.2 & 2)
-									# could maybe create self.time_step & slowly increment down
+		self.confidence_level = 0.5 
 
 		# Setup the elements to create the sound librabry global path	
 		self.sound_library = sound_library # "lib3" = library 3
@@ -60,7 +63,6 @@ class audio_object:
 
 		#Load audio file
 		mixer.music.load(self.mp3_path)
-		print("robot sound is playing....")
 
 		#Set preferred volume
 		mixer.music.set_volume(mixer_volume)
@@ -72,16 +74,21 @@ class audio_object:
 		# Probe user on what state they think the robot is in, and how confident they are on scale 0-10
 		while True:
 			try:
-				print()
-				probed_state_index = int(input(f"What state is the robot in: \n[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\nHit 'enter' to replay the sound...\nSelect a state between [0 to 3]:\n"))
+				print("------------------------------------------------------------------------")
+				print("------------------------------------------------------------------------\n")
+				print("Robot sound is playing....\n")
+				cprint(f"What state is the robot in: \n", "black", "on_green", attrs=["bold"])
+				print(f"[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\n")
+				print("Hit 'enter' to replay the sound...")
+				cprint(f"Select a state between [0 to 3]: ", "black", "on_green", attrs=["bold"])
+				probed_state_index = int(input())
 				print()
 
 			except ValueError:
 				mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
 				mixer.music.play()
-				print()
-				print(f"Please enter the numerical index of the state shown below.")
-				print()
+					  
+				cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
 				continue
 
 			if probed_state_index == 0:
@@ -101,34 +108,32 @@ class audio_object:
 				break
 
 			elif probed_state_index == 4:
-				print(f'Replaying sound...\n')
-				print()
+				print(f'Replaying sound...\n\n')
 
 			else:
-				print()
-				print(f"Please enter the numerical index of the state shown below.")
-				print()
+				cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
 
 
 		while True:
 			try:
-				probed_confidence = int(input("Hit 'enter' to replay the sound... \nScore your confidence in this response from [0 to 10]: "))
+				print("Hit 'enter' to replay the sound...")
+				cprint(f"Score your confidence in this response from [0 to 10]: ", "black", "on_green", attrs=["bold"])
+				probed_confidence = int(input())
+					  
 			except ValueError:
-				print()
-				print("Please enter a valid integer 0 to 10")
-				print()
 				mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
 				mixer.music.play()
 
+				cprint(f"\nPlease enter a valid integer in the range 0 to 10...\n", "black", "on_red", attrs=["bold"])
 				continue
+					  
 			if probed_confidence >= 0 and probed_confidence <= 10:
 				print(f'You entered: {probed_confidence}\n')
 				break
 
 			else:
-				print()
-				print('The integer must be in the range 0 to 10')
-				print()
+				cprint(f"\nPlease enter a valid integer in the range 0 to 10...\n", "black", "on_red", attrs=["bold"])
+
 
 		# User has now responded --> stop the sound playing
 		mixer.music.stop()

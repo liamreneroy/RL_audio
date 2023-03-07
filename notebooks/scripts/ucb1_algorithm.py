@@ -1,6 +1,10 @@
 # IMPORTS
 import numpy as np
 
+import sys
+from termcolor import colored, cprint
+# Termcolor guide: https://pypi.org/project/termcolor/
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZATIONS 
@@ -19,13 +23,13 @@ class robot_state:
 
 		if load_file: # Load an existing Q-table
 			self.action_value_lookup = np.load("user_data/user_" + user_ID_str + "/arrays/" + load_file + "_st" + str(self.state_idx) + ".npy")
-			print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-			print(f"Initialized Q-table file: {'user_data/user_' + user_ID_str + '/arrays/' + load_file + '_st' + str(self.state_idx) + '.npy'}\n")
+			# print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			# print(f"Initialized Q-table file: {'user_data/user_' + user_ID_str + '/arrays/' + load_file + '_st' + str(self.state_idx) + '.npy'}\n")
 			
 		else: # Initialize all Q-Values to max reward (optimism in the face of uncertainty)
 			self.action_value_lookup = np.ones((param_disc, param_disc, param_disc)) * 10.0 # Arbitrary initialization
-			print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-			print(f"Initialized action value Q-table as flat 10.0\n")
+			# print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			# print(f"Initialized action value Q-table as flat 10.0\n")
 
 
 	def action_selection(self):
