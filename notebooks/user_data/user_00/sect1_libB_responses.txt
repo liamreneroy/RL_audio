@@ -1,0 +1,21 @@
+00 - sect1 - libB
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+current_state_index: 0
+probed_state_index: 0
+probed_confidence: 5
+
+________________________________________________________________________
+
+current_state_index: 1
+probed_state_index: 3
+probed_confidence: 3
+
+________________________________________________________________________
+
+current_state_index: 2
+probed_state_index: 2
+probed_confidence: 3
+
+________________________________________________________________________
+

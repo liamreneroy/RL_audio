@@ -8,7 +8,15 @@ from scripts import ucb1_algorithm as ucb1
 import sys
 from termcolor import colored, cprint
 # Termcolor guide: https://pypi.org/project/termcolor/
-    
+
+import random
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# INITIALIZATIONS
+
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # STAND-ALONE FUNCTIONS
@@ -115,7 +123,12 @@ def get_user_ID(parent_dir, num_of_states):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_states, states_array, state_descriptions, param_disc, load_file="pilotset"):
+def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_states, states_array, state_descriptions, param_disc, load_file="pilotset", seed=55):
+    
+    random.seed(seed)
+    rand_state_idx_list = [*range(0, num_of_states, 1)]
+    random.shuffle(rand_state_idx_list)
+    print("Suffled rand_state_idx_list:", rand_state_idx_list)
     
     #creating a text file with the command function "w"
     textfile = open("user_data/user_" + user_ID_str + "/" + sect_str + "_" + lib_str + "_responses.txt", "w")
@@ -123,7 +136,7 @@ def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_st
     textfile.write("~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
     textfile.flush()
 
-    for state_idx in range(num_of_states):
+    for state_idx in rand_state_idx_list:  # To run them in order, replace with: for ... in range(num_of_states)
         current_state_index = state_idx
 
         # At each index of the state array, add the state object (each object has a unique index, description, and Q-table)

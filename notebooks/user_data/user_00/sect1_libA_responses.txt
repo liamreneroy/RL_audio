@@ -1,0 +1,21 @@
+00 - sect1 - libA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+current_state_index: 1
+probed_state_index: 1
+probed_confidence: 8
+
+________________________________________________________________________
+
+current_state_index: 2
+probed_state_index: 2
+probed_confidence: 8
+
+________________________________________________________________________
+
+current_state_index: 0
+probed_state_index: 0
+probed_confidence: 7
+
+________________________________________________________________________
+
