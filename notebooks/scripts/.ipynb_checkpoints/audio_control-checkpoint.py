@@ -128,7 +128,7 @@ class audio_object:
 				continue
 					  
 			if probed_confidence >= 0 and probed_confidence <= 10:
-				print(f'You entered: {probed_confidence}\n')
+				print(f'\nYou entered: {probed_confidence}\n')
 				break
 
 			else:

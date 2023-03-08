@@ -132,8 +132,6 @@ def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_st
     
     #creating a text file with the command function "w"
     textfile = open("user_data/user_" + user_ID_str + "/" + sect_str + "_" + lib_str + "_responses.txt", "w")
-    textfile.write(f"{user_ID_str} - {sect_str} - {lib_str}\n")
-    textfile.write("~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
     textfile.flush()
 
     for state_idx in rand_state_idx_list:  # To run them in order, replace with: for ... in range(num_of_states)
@@ -148,14 +146,13 @@ def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_st
         # Now lets play this action for the user and get their reponse 
         probed_state_index, probed_confidence = sound_obj_array[param_1_idx, param_2_idx, param_3_idx].probe(state_descriptions)
 
-        textfile.write(f"current_state_index: {current_state_index}\n")
-        textfile.write(f"probed_state_index: {probed_state_index}\n")
-        textfile.write(f"probed_confidence: {probed_confidence}\n")
-        textfile.write("\n________________________________________________________________________\n\n")
+        textfile.write(f"{current_state_index:02} - current_state_index: \n")
+        textfile.write(f"{probed_state_index:02} - probed_state_index: \n")
+        textfile.write(f"{probed_confidence:02} - probed_confidence: \n")
+        textfile.write("\n________________________________________________________________________\n")
         textfile.flush()
         
     textfile.close()
-
 
     # Coloured print statement to direct user to next cell
     cprint("\n\n\n------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
