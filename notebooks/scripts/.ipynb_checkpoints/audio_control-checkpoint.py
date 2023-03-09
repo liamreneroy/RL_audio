@@ -70,75 +70,93 @@ class audio_object:
 		#Play the music
 		mixer.music.play()
 
+		state_probe_complete = False
+		confid_probe_complete = False
 
 		# Probe user on what state they think the robot is in, and how confident they are on scale 0-10
 		while True:
-			try:
-				print("------------------------------------------------------------------------")
-				print("------------------------------------------------------------------------\n")
-				print("Robot sound is playing....\n")
-				cprint(f"What state is the robot in: \n", "black", "on_green", attrs=["bold"])
-				print(f"[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\n")
-				print("Hit 'enter' to replay the sound...")
-				cprint(f"Select a state between [0 to 3]: ", "black", "on_green", attrs=["bold"])
-				probed_state_index = int(input())
-				print()
+			if state_probe_complete == False:
+				while True:
+					try:
+						print("------------------------------------------------------------------------")
+						print("------------------------------------------------------------------------\n")
+						print("Robot sound is playing....\n")
+						cprint(f"What state is the robot in: \n", "black", "on_green", attrs=["bold"])
+						print(f"[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\n")
+						print("To replay the sound: leave the input empty and hit 'enter'...")
+						cprint(f"Select a state between [0 to 3]: ", "black", "on_green", attrs=["bold"])
+						probed_state_index = int(input())
+						print()
 
-			except ValueError:
-				mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
-				mixer.music.play()
-					  
-				cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
-				continue
+					except ValueError:
+						mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
+						mixer.music.play()
 
-			if probed_state_index == 0:
-				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
-				break
+						cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
+						continue
 
-			elif probed_state_index == 1:
-				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
-				break
-			
-			elif probed_state_index == 2:
-				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
-				break
+					if probed_state_index == 0:
+						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+						state_probe_complete = True
+						break
+						
+					elif probed_state_index == 1:
+						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+						state_probe_complete = True
+						break
+						
+					elif probed_state_index == 2:
+						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+						state_probe_complete = True
+						break
+						
+					elif probed_state_index == 3:
+						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+						state_probe_complete = True
+						probed_confidence_int = 0
+						confid_probe_complete = True
+						break
 
-			elif probed_state_index == 3:
-				print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
-				break
+					elif probed_state_index == 4:
+						print(f'Replaying sound...\n\n')
+					else:
+						cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
 
-			elif probed_state_index == 4:
-				print(f'Replaying sound...\n\n')
+			if confid_probe_complete == False:
+				while True:
+					try:
+						print("To replay the sound: Leave the input empty and hit 'enter'...")
+						cprint(f"Score your confidence in this response from [0 to 10] or type 'back' to go back: ", "black", "on_green", attrs=["bold"])
+						probed_confidence = input()
+						probed_confidence_int = int(probed_confidence)
+						
+					except ValueError:
+						if probed_confidence == "back":
+							state_probe_complete = False
+							confid_probe_complete = False
+							break
+						
+						else:
+							mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
+							mixer.music.play()
+							cprint(f"\nPlease enter a valid integer in the range 0 to 10 or type 'back' to go back...\n", "black", "on_red", attrs=["bold"])
+							continue
 
-			else:
-				cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
+					if probed_confidence_int >= 0 and probed_confidence_int <= 10:
+						print(f'\nYou entered: {probed_confidence_int}\n')
+						confid_probe_complete = True
+						break
 
+					else:
+						cprint(f"\nPlease enter a valid integer in the range 0 to 10 or type 'back' to go back...\n", "black", "on_red", attrs=["bold"])
 
-		while True:
-			try:
-				print("Hit 'enter' to replay the sound...")
-				cprint(f"Score your confidence in this response from [0 to 10]: ", "black", "on_green", attrs=["bold"])
-				probed_confidence = int(input())
-					  
-			except ValueError:
-				mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
-				mixer.music.play()
-
-				cprint(f"\nPlease enter a valid integer in the range 0 to 10...\n", "black", "on_red", attrs=["bold"])
-				continue
-					  
-			if probed_confidence >= 0 and probed_confidence <= 10:
-				print(f'\nYou entered: {probed_confidence}\n')
-				break
-
-			else:
-				cprint(f"\nPlease enter a valid integer in the range 0 to 10...\n", "black", "on_red", attrs=["bold"])
-
-
+			if state_probe_complete == True and confid_probe_complete == True:
+				break				
+						
 		# User has now responded --> stop the sound playing
 		mixer.music.stop()
 
-		return probed_state_index, probed_confidence
+		return probed_state_index, probed_confidence_int
 
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
