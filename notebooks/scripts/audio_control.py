@@ -40,7 +40,8 @@ class audio_object:
 		# Setup the elements to create the sound librabry global path	
 		self.sound_library = sound_library # "lib3" = library 3
 		
-		audio_library_path = "/home/liamroy/Documents/PHD/repos/RL_audio/audio/sonif_" + sound_library + "/looped/"
+		audio_library_path = "audio/sonif_" + sound_library + "/looped/"
+		# audio_library_path = "/home/liamroy/Documents/PHD/repos/RL_audio/audio/sonif_" + sound_library + "/looped/"
 		audio_extension = ".mp3"
 
 		# Define the sound librabry global path

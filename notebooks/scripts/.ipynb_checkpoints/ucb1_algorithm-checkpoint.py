@@ -120,8 +120,7 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
             print(f"Time Step: {time_step_str}")
             print("state_idx_set:", state_idx_set)
             print("current_state_index:", current_state_index)
-            print(f"\nNew Param INDICES (not direct values): \nP1: {param_1_idx} (Beats per Minute - BPM) \nP2: 
-                  {param_2_idx} (Beeps per Loop - BPL) \nP3: {param_3_idx} (Amplitude of Pitch Change)\n")
+            print(f"\nNew Param INDICES (not direct values): \nP1: {param_1_idx} (Beats per Minute - BPM) \nP2: {param_2_idx} (Beeps per Loop - BPL) \nP3: {param_3_idx} (Amplitude of Pitch Change)\n")
 
            
         time_step += 1
