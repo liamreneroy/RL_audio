@@ -70,7 +70,7 @@ def get_user_ID(parent_dir, num_of_states):
 		else:
 			print("Invalid user ID...\n")
 	
-	time.sleep(2)
+	time.sleep(1)
 	
 	return user_ID_str
 

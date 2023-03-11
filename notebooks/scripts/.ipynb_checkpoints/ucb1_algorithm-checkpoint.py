@@ -181,7 +181,7 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 
             np.save("user_data/user_" + current_user_ID_str + "/arrays/" + save_file + "_step" + time_step_str + "_st" + str(state_idx) + ".npy", states_array[state_idx].action_value_lookup)
 
-            time.sleep(0.5) # Put here to make UI a bit nicer 
+            # time.sleep(0.5)  - Put here to make UI a bit nicer 
 
 
         # Now check to see if there is convergence for each state..
