@@ -12,7 +12,7 @@ from termcolor import colored, cprint
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZATIONS 
-default_mixer_volume = 0.75
+default_mixer_volume = 0.70
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,9 +50,16 @@ class audio_object:
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	def initialize(self):
-		""" Initialize both counter n and estimated reward Q. """
-		self.n = 0   # the number of times this socket has been tried
+	def initialize(self, load_file=None):
+		""" Initialize the counter n to either 0 or 1 - dependant. """
+		
+		# n = the number of times this socket has been tried
+		if load_file:
+			self.n = 1  # The algirthm follows the Q-table if we initialize with a known action-value dataset
+						# Setting each to 1 at the beginning means we will not receive "inf" for each uncertainty, 
+						# and only have to try actions with initliazed high value
+		else:
+			self.n = 0	  
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -164,17 +171,17 @@ class audio_object:
 
 
 	def update(self):
-		""" update this Q-Value for this sound after it has returned reward value 'R' """	 
+		""" update the number of times this action has been selected. """	 
 	
-		# increment the number of times this socket has been tried
 		self.n += 1
 
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 
 	def uncertainty(self, time_step): 
-		""" calculate the uncertainty in the estimate of this audio object's mean """
-		if self.n == 0: return float('inf')						 
+		""" calculate the uncertainty based on the timestep and number of times this action has been selected. """
+		
+		if self.n == 0: return float('inf')	  # No longer need this but its a good failsafe 				 
 		return self.confidence_level * (np.sqrt(np.log(time_step) / self.n))   
 
 

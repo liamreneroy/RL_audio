@@ -2,6 +2,7 @@
 import os
 import shutil
 import time
+import numpy as np
 from scripts import audio_control
 from scripts import ucb1_algorithm as ucb1
 
@@ -70,7 +71,7 @@ def get_user_ID(parent_dir, num_of_states):
 		else:
 			print("Invalid user ID...\n")
 	
-	time.sleep(2)
+	time.sleep(1)
 	
 	return user_ID_str
 
@@ -79,13 +80,19 @@ def get_user_ID(parent_dir, num_of_states):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_states, states_array, state_descriptions, param_disc, load_file="pilotset", seed=55):
+def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_states, states_array, state_descriptions, param_disc, load_file="pilotset", seed=55, mixer_volume=0.70):
+	''' get the accuracy of the user given an existing set of states, sound library and Q-table for each state. Saves responses into an excel spreadsheet.'''
 	
 	random.seed(seed)
+
+	
 	rand_state_idx_list = [*range(0, num_of_states, 1)]
 	random.shuffle(rand_state_idx_list)
 	# print("Suffled rand_state_idx_list:", rand_state_idx_list)
 
+	uncertainty_array = np.zeros_like(sound_obj_array)
+
+	
 	# Enter the data in spreadsheet format
 	workbook_path = "user_data/response_book.xlsx"
 	response_book = load_workbook(workbook_path)
@@ -117,10 +124,10 @@ def get_user_accuracy(sound_obj_array, lib_str, sect_str, user_ID_str, num_of_st
 		states_array[state_idx] = ucb1.robot_state(state_idx, state_descriptions[state_idx], param_disc, load_file, user_ID_str)
 
 		# Select the highest valued action in that states Q-Table - assign to params 1,2,3
-		param_1_idx, param_2_idx, param_3_idx = states_array[current_state_index].action_selection()
+		param_1_idx, param_2_idx, param_3_idx = states_array[current_state_index].action_selection(uncertainty_array)
 
 		# Now lets play this action for the user and get their reponse 
-		probed_state_index, probed_confidence = sound_obj_array[param_1_idx, param_2_idx, param_3_idx].probe(state_descriptions)
+		probed_state_index, probed_confidence = sound_obj_array[param_1_idx, param_2_idx, param_3_idx].probe(state_descriptions, mixer_volume)
 
 
 		# Enter the data in spreadsheet format
