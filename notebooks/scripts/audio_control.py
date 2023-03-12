@@ -90,51 +90,59 @@ class audio_object:
 						print("------------------------------------------------------------------------\n")
 						print("Robot sound is playing....\n")
 						cprint(f"What state is the robot in: \n", "black", "on_green", attrs=["bold"])
-						print(f"[0]: {all_states[0]} \n[1]: {all_states[1]} \n[2]: {all_states[2]} \n[3]: {all_states[3]} \n\n")
+						print(f"[S]: {all_states[0]} \n[A]: {all_states[1]} \n[P]: {all_states[2]} \n[N]: {all_states[3]} \n\n")
 						print("To replay the sound: leave the input empty and hit 'enter'...")
-						cprint(f"Select a state between [0 to 3]: ", "black", "on_green", attrs=["bold"])
-						probed_state_index = int(input())
+						cprint(f"Select a state by entering its first letter [S - A - P - N]: ", "black", "on_green", attrs=["bold"])
+						probed_state_str = str(input())
 						print()
 
 					except ValueError:
 						mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
 						mixer.music.play()
 
-						cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
+						cprint(f"\nPlease enter the first letter of the state...\n", "black", "on_red", attrs=["bold"])
 						continue
 
-					if probed_state_index == 0:
-						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+					if probed_state_str == "S" or probed_state_str == "s":
+						probed_state_index = 0
+						print(f'You entered: {probed_state_str}')
+						cprint(f"{all_states[probed_state_index]}\n", "black", "on_yellow", attrs=["bold"])
 						state_probe_complete = True
 						break
 						
-					elif probed_state_index == 1:
-						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+					elif probed_state_str == "A" or probed_state_str == "a":
+						probed_state_index = 1
+						print(f'You entered: {probed_state_str}')
+						cprint(f"{all_states[probed_state_index]}\n", "black", "on_yellow", attrs=["bold"])
 						state_probe_complete = True
 						break
 						
-					elif probed_state_index == 2:
-						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+					elif probed_state_str == "P" or probed_state_str == "p":
+						probed_state_index = 2
+						print(f'You entered: {probed_state_str}')
+						cprint(f"{all_states[probed_state_index]}\n", "black", "on_yellow", attrs=["bold"])
 						state_probe_complete = True
 						break
 						
-					elif probed_state_index == 3:
-						print(f'You entered: {probed_state_index} --> state: {all_states[probed_state_index]}\n')
+					elif probed_state_str == "N" or probed_state_str == "n":
+						probed_state_index = 3
+						print(f'You entered: {probed_state_str}')
+						cprint(f"{all_states[probed_state_index]}\n", "black", "on_yellow", attrs=["bold"])
 						state_probe_complete = True
 						probed_confidence_int = 0
 						confid_probe_complete = True
 						break
-
-					elif probed_state_index == 4:
-						print(f'Replaying sound...\n\n')
 					else:
-						cprint(f"\nPlease enter the numerical index of the state...\n", "black", "on_red", attrs=["bold"])
+						mixer.music.rewind()	# Restart the sound if user enters an invalid entry so they can re-listen
+						mixer.music.play()
+						cprint(f"\nPlease enter the first letter of the state...\n", "black", "on_red", attrs=["bold"])
 
+						
 			if confid_probe_complete == False:
 				while True:
 					try:
 						print("To replay the sound: Leave the input empty and hit 'enter'...")
-						cprint(f"Score your confidence in this response from [0 to 10] or type 'back' to go back: ", "black", "on_green", attrs=["bold"])
+						cprint(f"Score your confidence in this response from [0 to 10]\n or \nType 'back' to change your response: ", "black", "on_green", attrs=["bold"])
 						probed_confidence = input()
 						probed_confidence_int = int(probed_confidence)
 						
@@ -156,6 +164,8 @@ class audio_object:
 						break
 
 					else:
+						mixer.music.rewind() # Restart the sound if user enters an invalid entry so they can re-listen
+						mixer.music.play()
 						cprint(f"\nPlease enter a valid integer in the range 0 to 10 or type 'back' to go back...\n", "black", "on_red", attrs=["bold"])
 
 			if state_probe_complete == True and confid_probe_complete == True:

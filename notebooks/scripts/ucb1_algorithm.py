@@ -236,7 +236,7 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 				if printer:
 					print(f"in_a_row_st0 +1, total {in_a_row_st0} becase correct and same")
 			elif probed_state_index == current_state_index and delta_Q <= delta_Q_thresh: 
-				in_a_row_st1 += 1
+				in_a_row_st0 += 1
 				if printer:
 					print(f"in_a_row_st0 +1, total {in_a_row_st0} becase correct and under delta Q thresh")
 			else:
@@ -272,7 +272,7 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 				if printer:
 					print(f"in_a_row_st2 +1, total {in_a_row_st2} becase correct and same")
 			elif probed_state_index == current_state_index and delta_Q <= delta_Q_thresh: 
-				in_a_row_st1 += 1
+				in_a_row_st2 += 1
 				if printer:
 					print(f"in_a_row_st2 +1, total {in_a_row_st2} becase correct and under delta Q thresh")			
 			else:
@@ -287,17 +287,17 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 		if in_a_row_st0 >= conv_thresh:
 			state_idx_set.discard(0)
 			if printer:
-				cprint(f"State 0 Converged", "black", "on_yellow", attrs=["bold"])
+				cprint(f"State [S] Converged", "black", "on_yellow", attrs=["bold"])
 
 		if in_a_row_st1 >= conv_thresh:
 			state_idx_set.discard(1)
 			if printer:
-				cprint(f"State 1 Converged", "black", "on_yellow", attrs=["bold"])
+				cprint(f"State [A] Converged", "black", "on_yellow", attrs=["bold"])
 
 		if in_a_row_st2 >= conv_thresh:
 			state_idx_set.discard(2)
 			if printer:
-				cprint(f"State 2 Converged", "black", "on_yellow", attrs=["bold"])
+				cprint(f"State [P] Converged", "black", "on_yellow", attrs=["bold"])
 
 				
 		# If we've hit the convergence threshold on all our states --> end the algorithm early
