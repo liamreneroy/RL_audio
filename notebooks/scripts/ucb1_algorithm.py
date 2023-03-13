@@ -314,6 +314,11 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 		print("final time_step:", time_step)
 
 		
+	for state_idx in range(num_of_states):
+		# Save the final action-value array for that state at that timestep	
+		np.save("user_data/user_" + current_user_ID_str + "/arrays/" + save_file + "_final_st" + str(state_idx) + ".npy", states_array[state_idx].action_value_lookup)
+
+		
 	# Coloured print statement to direct user to next cell
 	cprint("\n\n\n------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
 	cprint("------------------------------------------------------------------------\n", "light_yellow", attrs=["bold"])
@@ -322,6 +327,3 @@ def ucb1_algor(num_of_states, state_descriptions, param_disc, sound_obj_array, c
 	cprint("------------------------------------------------------------------------", "light_yellow", attrs=["bold"])
 	cprint("------------------------------------------------------------------------\n\n\n", "light_yellow", attrs=["bold"])
 	
-	
-	# Return the timestep string - use this for loading the last known Q-table for each state
-	return time_step_str
