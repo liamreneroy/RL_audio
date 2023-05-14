@@ -26,7 +26,7 @@ nbconvert-webpdf
 
 ## Find the Notebook
 The notebok can then be found at:  
-.../RL_audio/notebooks/study_notebook_V3.ipynb  
+.../RL_audio/notebooks/study_notebook_V4.ipynb  
 
 
 ## Owner: 
