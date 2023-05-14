@@ -26,7 +26,7 @@ class audio_object:
 
 		# set all the sound parameters for the object (value for volume, amplitude of pitch change, etc)
 		# Each parameter ranges on an INTEGER value from 0 to 4 value --> 0 is lowest, 4 is highest
-		self.param_1 = param_1 	# Speed of audio loop (BPM)		 --> (120 BPM   //  150 BPM  //  180 BPM)
+		self.param_1 = param_1 	# Speed of audio loop (BPM)		 --> (100 BPM   //  140 BPM  //  180 BPM)
 		self.param_2 = param_2 	# Number of beeps per loop (BPL) --> (1 BPL	 //  2 BPM	 //  4 BPL) 
 		self.param_3 = param_3 	# Amplitude of Pitch Bend  		 --> (downward  //  neutral  //  upward)
 
