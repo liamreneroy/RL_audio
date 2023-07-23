@@ -109,10 +109,6 @@ wilcox.test(steps_to_conv_sect2X_condB, steps_to_conv_sect2O_condB, alternative 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
-
-
-
 # TESTING HOW THINGS WORK
 # Shorter way to do the test. Your ranked value will end up as the lower of the two in this case.
 # wilcox.test(accuracy_before_libA_condA, accuracy_after_libA_condA, alternative = "two.sided", exact = FALSE, conf.int = TRUE, conf.level = 0.95)
