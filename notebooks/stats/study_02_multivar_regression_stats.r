@@ -95,6 +95,9 @@ summary(st0_sect2X_logit, list.len = ncol(trimmed_regression_st0_sect2X_data))
 
 
 
+
+
+
 # STATE: 1 (Accomplished)  //  SECTION: 2X (Uninformed)
 regression_st1_sect2X_data <- read_excel("response_book.xlsx", sheet="regression_st1_sect2X", range = "A1:G649", col_names = TRUE, col_types = NULL, na = "", skip = 0)
 
