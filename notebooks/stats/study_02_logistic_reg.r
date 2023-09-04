@@ -110,20 +110,32 @@ predicted.st0_sect2U_logit$rank <- 1:nrow(predicted.st0_sect2U_logit)
 # whether that sample is actually labeled as 'correct' or 'incorrect' 
 ggplot(data=predicted.st0_sect2U_logit, aes(x=rank, y=probability.of.Correct)) +
   geom_point(aes(color=Correct), alpha=1, shape=4, stroke=2) +
-  xlab("Index") +
-  ylab("Predicted probability of Correct")
+  xlab("Data Point Index") +
+  ylab("Predicted Probability of Correctly Identified Robot State\n") +
+    ggtitle("Logistic Regression for State 0, Section 2U\n") +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    scale_color_manual(values=c("#40a100", "#ff6600")) +
+    theme(legend.title=element_blank()) +
+    theme(legend.position="bottom") +
+    theme(legend.text=element_text(size=12)) +
+    theme(axis.text.x=element_text(size=12)) +
+    theme(axis.text.y=element_text(size=12)) +
+    theme(axis.title.x=element_text(size=16)) +
+    theme(axis.title.y=element_text(size=16)) +
+    theme(plot.title=element_text(size=20))
+ 
  
 
  # QUESTIONS FOR DANA:
  
- # After doing the regression, we see that parameters P1_BPM and P2_BPL are not significant
-    # Can we remove these parameters from the model? Should I re-run this analysis without these parameters?
-    # If we remove these parameters, how would we report this in the paper? 
+ # 1) After doing the regression, we see that parameters P1_BPM and P2_BPL are not significant
+      # Can we remove these parameters from the model? Should I re-run this analysis without these parameters?
+      # If we remove these parameters, how would we report this in the paper? 
             # (i.e. do we explain that we ran the regression twice, once after removing insignificant parameters?)
 
-# This R script performs a regression for the dataset: State 0 (Stuck), Section U (Uninformed)
-    # Let me know if this R script is better. Then I can run the remaining 5 analyses (State 0/1/2, Section U/I)
-    # Should I combine the datasets and perform a regression which considers all states together? 
-    # Perhaps I could combine State 0/1/2 but keep a separation between Section U/I...
+# 2) This R script performs a regression for the dataset: State 0 (Stuck), Section U (Uninformed)
+     # Let me know if this R script is better. Then I can run the remaining 5 analyses (State 0/1/2, Section U/I)
+     # Should I combine the datasets and perform a regression which considers all states together? 
+     # Perhaps I could combine State 0/1/2 but keep a separation between Section U/I...
         # This would result in 2 datasets:   Section U, State 0/1/2 
         #                                    Section I, State 0/1/2 
