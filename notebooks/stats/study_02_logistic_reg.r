@@ -65,10 +65,22 @@ xtabs(~ Correct + P3_Pitch, data=st0_sect2U_data_trim)
 
 
 # Now lets run a logistic regression using the glm function
-
 # Lets look at the model with all variables
 st0_sect2U_logit <- glm(Correct ~ P1_BPM + P2_BPL + P3_Pitch + Confidence, data=st0_sect2U_data_trim, family='binomial')
 summary(st0_sect2U_logit)
+
+## QUICK DIVE INTO RESULTS
+# BPM and BPL do not show a significant effect (p > 0.05)
+# Pitch shows a significant effect (p < 0.05) 
+# Confidence shows a significant effect (p < 0.05)
+#
+# Pitch and Confidence are both significant, so we shouldn't remove either of them from the model
+# BPM and BPL are not significant, so we should remove them from the model
+#
+# Note that coefficients for Pitch are substantially larger than the coefficients for Confidence
+## 
+
+
 
 # Now calculate the overall "Pseudo R-squared" and its p-value
 # Note: Since we are doing logistic regression...
