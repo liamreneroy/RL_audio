@@ -2,7 +2,13 @@
 # To run the entire script, type: Ctrl+Shift+S, for one line simply Ctrl+Enter
 # To modify linter try this page: https://lintr.r-lib.org/articles/lintr.html#configuring-linters
 
-# Study 02 data series
+# This script performs a logistic regression on the data from Study 2
+
+# Reference Video (StatQuest)
+# https://www.youtube.com/watch?v=C4N3_XJJ-jU&list=PLblh5JKOoLUKxzEP5HA2d-Li7IJkHfXSe&index=7&ab_channel=StatQuestwithJoshStarmer
+
+# Reference Code (StatQuest)
+# https://github.com/StatQuest/logistic_regression_demo/blob/master/logistic_regression_demo.R
 
 ### INSTALLING PACKAGES ###
 ## if you see the version is out of date, run: update.packages()
@@ -10,11 +16,12 @@
 # install.packages("readxl")
 # install.packages("ggplot2")
 # install.packages("cowplot")
-### LOADING PACKAGES ###
 
+### LOADING PACKAGES ###
 library("readxl")
 library("ggplot2")
 library("cowplot")
+
 
 ### CHECK CURRENT DIRECTORY LOCATION
 getwd() 
@@ -32,12 +39,11 @@ st0_sect2U_data_trim <- subset(st0_sect2U_data, select = -c(1, 3))
 str(st0_sect2U_data_trim)
 
 # Currently our acoustic parameters are type 'num', we need to modify this
-# NOTE: The next lines convert ordinal data to factors (catagorical)
+# Note: The next lines convert ordinal data to factors (catagorical)
+# Note, we don't convert the confidence to a factor, since it is a continuous variable (0.0-10.0)
 st0_sect2U_data_trim$P1_BPM <- as.factor(st0_sect2U_data_trim$P1_BPM)
 st0_sect2U_data_trim$P2_BPL <- as.factor(st0_sect2U_data_trim$P2_BPL)
 st0_sect2U_data_trim$P3_Pitch <- as.factor(st0_sect2U_data_trim$P3_Pitch)
-# Note, we don't convert the confidence to a factor, since it is a continuous variable
-
 
 # Replace the binary output for 'Correct' with "Correct" and "Incorrect"
 st0_sect2U_data_trim$Correct <- ifelse(test=st0_sect2U_data_trim$Correct == 1, yes="Correct", no="Incorrect")
@@ -58,8 +64,7 @@ xtabs(~ Correct + P2_BPL, data=st0_sect2U_data_trim)
 xtabs(~ Correct + P3_Pitch, data=st0_sect2U_data_trim)
 
 
-# Now lets run a logistic regression
-# Note: we are using the glm function
+# Now lets run a logistic regression using the glm function
 
 # Lets look at the model with all variables
 st0_sect2U_logit <- glm(Correct ~ P1_BPM + P2_BPL + P3_Pitch + Confidence, data=st0_sect2U_data_trim, family='binomial')
@@ -90,7 +95,7 @@ ll.proposed <- st0_sect2U_logit$deviance/-2   # Model w/ all parameters
 # p-value = 1 - pchisq(chi-square value, df = 2-1)
 1 - pchisq(2*(ll.proposed - ll.null), df=(length(st0_sect2U_logit$coefficients)-1))
 
-# Note that the p-value is so tiny it is essentially zero (p < 0.0001)
+# Note that the resulting p-value is so tiny it is essentially zero (p < 0.0001)
 
 
 # Now plot the data:
