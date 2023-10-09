@@ -37,7 +37,7 @@ regression_data <- read_excel("notebooks/user_data/response_book.xlsx", sheet="r
 # Look at the data
 head(regression_data)
 
-# Remove the first and third column (Value and User ID)
+# Remove the 1st, 3rd and 7th column (Value, User ID, Confidence)
 regression_data_trim <- subset(regression_data, select = -c(1, 3))
 
 # Look at the data structure (see what type of data is in each column)
@@ -45,6 +45,12 @@ str(regression_data_trim)
 
 # Currently our acoustic parameters are type 'num', we need to modify this
 # Note: The next lines convert ordinal data to factors (catagorical)
+
+# Replace the binary output for 'Positive_Val' with "=Positive Value" and "=Non-positive Value"
+regression_data_trim$Positive_Val <- ifelse(test=regression_data_trim$Positive_Val == 1, yes="=Positive Value", no="=Non-positive Value")
+regression_data_trim$Positive_Val <- as.factor(regression_data_trim$Positive_Val) # Now convert to a factor
+
+
 # Note, we don't convert the confidence to a factor, since it is a continuous variable (0.0-10.0)
 regression_data_trim$P1_BPM <- as.character(regression_data_trim$P1_BPM)
 regression_data_trim[regression_data_trim$P1_BPM == '0',]$P1_BPM <- "=0"
@@ -77,30 +83,28 @@ regression_data_trim[regression_data_trim$Init == "U",]$Init <- "=Uninformed"
 regression_data_trim[regression_data_trim$Init == "I",]$Init <- "=Informed"
 regression_data_trim$Init <- as.factor(regression_data_trim$Init)
 
-# Replace the binary output for 'Correct' with "Correct" and "Incorrect"
-regression_data_trim$Correct <- ifelse(test=regression_data_trim$Correct == 1, yes="Correct", no="Incorrect")
-regression_data_trim$Correct <- as.factor(regression_data_trim$Correct) # Now convert to a factor
 
 # Look at the data structure again (see what type of data is in each column)
 str(regression_data_trim)
 
-# Good practice: check that there is a good amount of samples for correct and incorrect responses
-table(regression_data_trim$Correct)
+# Good practice: check that there is a good amount of samples for Positive_Val and Non-positive_Val responses
+table(regression_data_trim$Positive_Val)
 
 # Good practice: exclude variables that only have 1 or 2 samples in a category
 # since +/- one or two samples can have a large effect on the odds/log(odds)
 # We only need to do this for our data that is catagorical (not continuous)
-xtabs(~ Correct + P1_BPM, data=regression_data_trim)
-xtabs(~ Correct + P2_BPL, data=regression_data_trim)
-xtabs(~ Correct + P3_Pitch, data=regression_data_trim)
-xtabs(~ Correct + State, data=regression_data_trim)
-xtabs(~ Correct + Init, data=regression_data_trim)
+xtabs(~ Positive_Val + P1_BPM, data=regression_data_trim)
+xtabs(~ Positive_Val + P2_BPL, data=regression_data_trim)
+xtabs(~ Positive_Val + P3_Pitch, data=regression_data_trim)
+xtabs(~ Positive_Val + State, data=regression_data_trim)
+xtabs(~ Positive_Val + Init, data=regression_data_trim)
 
 
 # Now lets run a logistic regression using the glm function
 # Lets look at the model with all variables
-regression_logit <- glm(Correct ~ P1_BPM + P2_BPL + P3_Pitch + Confidence + State + Init, data=regression_data_trim, family='binomial')
+regression_logit <- glm(Positive_Val ~ P1_BPM + P2_BPL + P3_Pitch + State + Init, data=regression_data_trim, family='binomial')
 summary(regression_logit)
+
 
 ## QUICK DIVE INTO RESULTS
 # BPM and BPL do not show a significant effect (p > 0.05)
@@ -146,23 +150,23 @@ ll.proposed <- regression_logit$deviance/-2   # Model w/ all parameters
 # Now plot the data:
 # Create a new dataframe that contains the predicted probabilities for each sample
 predicted.regression_logit <- data.frame(
-  probability.of.Correct=regression_logit$fitted.values,
-  Correct=regression_data_trim$Correct)
+  probability.of.Positive_Val=regression_logit$fitted.values,
+  Positive_Val=regression_data_trim$Positive_Val)
 
 # Sort the data by the predicted probability
 predicted.regression_logit <- predicted.regression_logit[
-  order(predicted.regression_logit$probability.of.Correct, decreasing=FALSE),]
+  order(predicted.regression_logit$probability.of.Positive_Val, decreasing=FALSE),]
 
 # Add a column that contains the index of each sample
 predicted.regression_logit$rank <- 1:nrow(predicted.regression_logit)
 
 # Lastly, plot the predicted probabilities for each sample and colour each sample based on
-# whether that sample is actually labeled as 'correct' or 'incorrect' 
-ggplot(data=predicted.regression_logit, aes(x=rank, y=probability.of.Correct)) +
-  geom_point(aes(color=Correct), alpha=1, shape=4, stroke=2) +
+# whether that sample is actually labeled as 'Positive_Val' or 'Non-positive_Val' 
+ggplot(data=predicted.regression_logit, aes(x=rank, y=probability.of.Positive_Val)) +
+  geom_point(aes(color=Positive_Val), alpha=1, shape=4, stroke=2) +
   xlab("Data Point Index") +
-  ylab("Predicted Probability of Correctly Identified Robot State\n") +
-    ggtitle("Logistic Regression for Correctly Identified Robot States\n") +
+  ylab("Predicted Probability of Parameter Combinations \nhaving Positive Value at Convergence\n") +
+    ggtitle("Logistic Regression for Parameter Combinations \nhaving Positive Value at Convergence\n") +
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_color_manual(values=c("#40a100", "#ff6600")) +
     theme(legend.title=element_blank()) +
@@ -173,19 +177,25 @@ ggplot(data=predicted.regression_logit, aes(x=rank, y=probability.of.Correct)) +
     theme(axis.title.x=element_text(size=16)) +
     theme(axis.title.y=element_text(size=16)) +
     theme(plot.title=element_text(size=20))
- 
- 
 
- # QUESTIONS FOR DANA:
- 
- # 1) After doing the regression, we see that parameters P1_BPM and P2_BPL are not significant
-      # Can we remove these parameters from the model? Should I re-run this analysis without these parameters?
-      # If we remove these parameters, how would we report this in the paper? 
-            # (i.e. do we explain that we ran the regression twice, once after removing insignificant parameters?)
 
-# 2) This R script performs a regression for the dataset: State 0 (Stuck), Section U (Uninformed)
-     # Let me know if this R script is better. Then I can run the remaining 5 analyses (State 0/1/2, Section U/I)
-     # Should I combine the datasets and perform a regression which considers all states together? 
-     # Perhaps I could combine State 0/1/2 but keep a separation between Section U/I...
-        # This would result in 2 datasets:   Section U, State 0/1/2 
-        #                                    Section I, State 0/1/2 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
