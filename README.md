@@ -1,5 +1,7 @@
 # RL_audio
-Codebase for audio communication RL bandit algorithm
+Codebase for audio communication RL bandit algorithm. This repo enables a virtual robot to learn to communicate different functional robot states using parameterized audio. This method was deployed and tested in a user study. The notebook used in this study protocol is available here:
+
+https://github.com/liamreneroy/RL_audio/blob/main/notebooks/study_notebook_V4.ipynb
 
 
 ## Packages to Install:
@@ -31,3 +33,4 @@ The notebok can then be found at:
 
 ## Owner: 
 Liam Roy
+Liamreneroy@gmail.com
