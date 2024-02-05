@@ -20,33 +20,27 @@ https://github.com/liamreneroy/RL_audio/blob/main/stats/
 https://github.com/liamreneroy/RL_audio/blob/main/notebooks/user_data/response_book.xlsx
 
 
+
 ## Packages to Install:
 pygame   (see this webpage ~ https://www.pygame.org/wiki/GettingStarted)  
 jupyterlab, numpy, termcolor, openpyxl, nbconvert-webpdf  
 
-
 Either use:    
---> sudo apt-get install <package_name>  
---> python3 -m pip install <package_name>  
---> conda install -c conda-forge <package_name>  
-
+>> sudo apt-get install <package_name>  
+>> python3 -m pip install <package_name>  
+>> conda install -c conda-forge <package_name>  
 
 Example using conda:  
---> conda install -c conda-forge <package_name>  
+>> conda install -c conda-forge <package_name>  
 
-jupyterlab or notebook  
-numpy  
-termcolor  
-openpyxl  
-nbconvert-webpdf              
+* jupyterlab or notebook  
+* numpy  
+* termcolor  
+* openpyxl  
+* nbconvert-webpdf              
 
-
-
-## Find the Notebook
-The notebok can then be found at:  
-.../RL_audio/notebooks/study_notebook_V4.ipynb  
 
 
 ## Owner: 
-Liam Roy
+Liam Rene Roy
 Liamreneroy@gmail.com
