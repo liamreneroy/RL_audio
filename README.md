@@ -1,5 +1,9 @@
-# RL_audio
+# RL Audio
 Codebase for audio communication reinforcement learning (RL) bandit algorithm. This repository enables a virtual robot to learn to communicate different functional robot states using parameterized audio.
+
+### Link to Research Paper
+TBA
+
 
 ## Main Files
 This method was deployed and tested in a user study. This study took the form of a Jupyter notebook. We provide the original interactive survey (Jupyter Notebook) with added step-by-step markdown comments describing the study procedure to enable reproducibility. 
